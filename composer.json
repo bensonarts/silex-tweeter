@@ -1,0 +1,14 @@
+{
+    "require": {
+        "silex/silex": "~2.0",
+        "friendsofsymfony/user-bundle": "~2.0",
+        "doctrine/dbal": "~2.2",
+        "twig/twig": "^1.34",
+        "silex/web-profiler": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Acme\\": "src/Acme"
+        }
+    }
+}
