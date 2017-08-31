@@ -37,12 +37,17 @@ class TweetControllerProvider implements ControllerProviderInterface
      */
     public function main(Application $app, Request $request)
     {
+        $token = $app['security.token_storage']->getToken();
+        if (null !== $token) {
+            $userId = $token->getUser()->getId();
+        } else {
+            return $app->redirect('/login');
+        }
+
         $em = $app['orm.em'];
         $tweet = new Tweet();
-        //$tweets = $em->getRepository('Acme:')
-        // TODO Get User ID from auth user.
-        $userId = 1;
-        // TODO Paginate.
+
+        // TODO Query tweets from repository class & paginate.
         $sql = 'SELECT * FROM tweet WHERE user_id = ? ORDER BY id DESC';
         $tweets = $app['db']->fetchAll($sql, [(int) $userId]);
         $form = $app['form.factory']->create(TweetType::class, $tweet);

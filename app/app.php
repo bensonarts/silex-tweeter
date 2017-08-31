@@ -39,10 +39,9 @@ $app->register(new Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), [
 ]);
 \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
-// TODO Refactor into UserModel.
-$users = [
-    'admin' => ['ROLE_ADMIN', '$2y$10$3i9/lVd8UOFIJ6PAMFt8gu3/r5g0qeCJvoSlLCsvMTythye19F77a']
-];
+$users = function () use ($app) {
+    return new Acme\Provider\UserProvider($app['db']);
+};
 // Register security for authentication
 
 $app->register(new Silex\Provider\SecurityServiceProvider(), [
@@ -50,12 +49,12 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), [
         'login' => array(
             'pattern' => '^/login$',
         ),
-        'admin' => [
+        'secured' => [
             'pattern' => '^.*$',
             'form' => [
                 'login_path' => '/login',
                 'default_target_path' => '/tweet/',
-                'check_path' => '/admin/login_check'
+                'check_path' => '/login_check'
             ],
             'logout' => [
                 'logout_path' => '/logout',
@@ -95,12 +94,5 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])
 // Initialize routes.
 $app->mount('/', new Acme\Controller\MainControllerProvider());
 $app->mount('/tweet', new Acme\Controller\TweetControllerProvider());
-
-$app->get('/login', function(Request $request) use ($app) {
-    return $app['twig']->render('auth/login.html.twig', [
-        'error' => $app['security.last_error']($request),
-        'last_username' => $app['session']->get('_security.last_username'),
-    ]);
-});
 
 return $app;

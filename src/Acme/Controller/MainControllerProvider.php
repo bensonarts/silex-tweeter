@@ -19,6 +19,7 @@ class MainControllerProvider implements ControllerProviderInterface
         $controllers = $app['controllers_factory'];
         $controllers->get('/', 'Acme\Controller\MainControllerProvider::main');
         $controllers->get('/hello/{name}', 'Acme\Controller\MainControllerProvider::hello');
+        $controllers->get('/login', 'Acme\Controller\MainControllerProvider::login');
 
         return $controllers;
     }
@@ -26,7 +27,7 @@ class MainControllerProvider implements ControllerProviderInterface
     /**
      * Home page controller
      *
-     * @param Silex\Application
+     * @param Silex\Application $app
      * @return Response
      */
     public function main(Application $app)
@@ -37,7 +38,7 @@ class MainControllerProvider implements ControllerProviderInterface
     /**
      * Hello user page controller
      *
-     * @param Silex\Application
+     * @param Silex\Application $app
      * @param string $name User's name.
      * @return Response
      */
@@ -45,6 +46,21 @@ class MainControllerProvider implements ControllerProviderInterface
     {
         return $app['twig']->render('startup/hello.html.twig', [
             'name' => $name,
+        ]);
+    }
+
+    /**
+     * Login page controller
+     *
+     * @param Silex\Application $app
+     * @param Request $request
+     * @return Response
+     */
+    public function login(Application $app, Request $request)
+    {
+        return $app['twig']->render('auth/login.html.twig', [
+            'error' => $app['security.last_error']($request),
+            'last_username' => $app['session']->get('_security.last_username'),
         ]);
     }
 
