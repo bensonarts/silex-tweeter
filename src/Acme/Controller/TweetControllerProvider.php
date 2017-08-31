@@ -37,6 +37,7 @@ class TweetControllerProvider implements ControllerProviderInterface
      */
     public function main(Application $app, Request $request)
     {
+        $em = $app['orm.em'];
         $token = $app['security.token_storage']->getToken();
         if (null !== $token) {
             $userId = $token->getUser()->getId();
@@ -44,15 +45,12 @@ class TweetControllerProvider implements ControllerProviderInterface
             return $app->redirect('/login');
         }
 
-        $em = $app['orm.em'];
         $tweet = new Tweet();
-
-        // TODO Query tweets from repository class & paginate.
-        $sql = 'SELECT * FROM tweet WHERE user_id = ? ORDER BY id DESC';
-        $tweets = $app['db']->fetchAll($sql, [(int) $userId]);
+        $tweets = $em->getRepository('Acme\Entity\Tweet')->findByUser($app, $userId);
         $form = $app['form.factory']->create(TweetType::class, $tweet);
         $form->handleRequest($request);
 
+        // Validate form.
         if ($form->isValid()) {
             $data = $form->getData();
 

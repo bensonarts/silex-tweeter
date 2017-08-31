@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity
  * @ORM\Table(name="tweet")
- * @ORM\Entity(repositoryClass="Acme\Repository\TweetRepository")
+ * @ORM\Entity(repositoryClass="Acme\Entity\TweetRepository")
  */
 class Tweet
 {
@@ -80,11 +80,22 @@ class Tweet
         return $this;
     }
 
+    /**
+     * Get message
+     *
+     * @return string
+     */
     public function getMessage()
     {
         return $this->message;
     }
 
+    /**
+     * Set message
+     *
+     * @param string $message
+     * @return Tweet
+     */
     public function setMessage($message)
     {
         $this->message = $message;
@@ -92,11 +103,21 @@ class Tweet
         return $this;
     }
 
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;
     }
 
+    /**
+     * Get id
+     *
+     * @return int
+     */
     public function getId()
     {
         return $this->id;

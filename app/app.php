@@ -83,7 +83,7 @@ if (isset($_SERVER['HTTP_CLIENT_IP'])
     || isset($_SERVER['HTTP_X_FORWARDED_FOR'])
     || (in_array(@$_SERVER['REMOTE_ADDR'], ['127.0.0.1', 'fe80::1', '::1', '192.168.56.1']) || php_sapi_name() === 'cli-server')
 ) {
-    // Create Symfony profiler.
+    // Create Symfony profiler in dev mode.
     $app->register(new Silex\Provider\WebProfilerServiceProvider(), [
         'profiler.cache_dir' => __DIR__ . '/../app/cache/profiler',
         'profiler.mount_prefix' => '/_profiler',
