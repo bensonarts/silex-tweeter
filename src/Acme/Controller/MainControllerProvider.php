@@ -8,6 +8,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MainControllerProvider implements ControllerProviderInterface
 {
+    /**
+     * Connect controllers
+     *
+     * @param Silex\Application $app
+     * @return array $controllers
+     */
     public function connect(Application $app)
     {
         $controllers = $app['controllers_factory'];
@@ -17,15 +23,29 @@ class MainControllerProvider implements ControllerProviderInterface
         return $controllers;
     }
 
+    /**
+     * Home page controller
+     *
+     * @param Silex\Application
+     * @return Response
+     */
     public function main(Application $app)
     {
         return $app['twig']->render('startup/main.html.twig');
     }
 
+    /**
+     * Hello user page controller
+     *
+     * @param Silex\Application
+     * @param string $name User's name.
+     * @return Response
+     */
     public function hello(Application $app, $name)
     {
         return $app['twig']->render('startup/hello.html.twig', [
             'name' => $name,
         ]);
     }
+
 }

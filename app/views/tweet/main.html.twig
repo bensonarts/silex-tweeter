@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <a href="{{ path('admin_logout') }}">Logout</a>
+    <h1>Tweet</h1>
+
+    <form method="post">
+        <div class="form-group">
+            {{ form_errors(form.message) }}
+            {{ form_widget(form) }}
+        </div>
+    </form>
+
+{% endblock %}

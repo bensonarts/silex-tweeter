@@ -2,10 +2,28 @@
 
 namespace Acme\Entity;
 
-class User
+use Symfony\Component\Security\Core\User\UserInterface;
+
+class User implements UserInterface
 {
-    public function __construct()
+
+    public function getRoles()
     {
-        exit('success');
+
+    }
+
+    public function getPassword()
+    {
+
+    }
+
+    public function getSalt()
+    {
+
+    }
+
+    public function getUsername()
+    {
+
     }
 }
