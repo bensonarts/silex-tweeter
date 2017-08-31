@@ -16,11 +16,10 @@ $app->register(new Silex\Provider\TwigServiceProvider(), [
 // Register Doctrine
 $app->register(new Silex\Provider\DoctrineServiceProvider(), [
     'db.options' => [
-        'driver' => 'pdo_mysql',
-        'dbhost' => 'local-db',
+        'driver' => 'pdo_sqlite',
+        'path' => __DIR__ . '/../app/db/app.db',
         'dbname' => 'tweeter',
-        'user' => 'root',
-        'password' => 'ansira',
+        'charset' => 'utf8mb4',
     ],
     'db.orm.proxies_dir'  => __DIR__ . '/../app/cache/doctrine/proxy',
 ]);
@@ -33,6 +32,7 @@ $app->register(new Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), [
                 'type' => 'annotation',
                 'namespace' => 'Acme\Entity',
                 'path' => __DIR__ . '/../src/Acme/Entity',
+                'use_simple_annotation_reader' => false,
             ],
         ],
     ],
@@ -47,16 +47,19 @@ $users = [
 
 $app->register(new Silex\Provider\SecurityServiceProvider(), [
     'security.firewalls' => [
+        'login' => array(
+            'pattern' => '^/login$',
+        ),
         'admin' => [
-            'pattern' => '^/admin/',
+            'pattern' => '^.*$',
             'form' => [
                 'login_path' => '/login',
-                'default_target_path' => '/admin/',
+                'default_target_path' => '/tweet/',
                 'check_path' => '/admin/login_check'
             ],
             'logout' => [
-                'logout_path' => '/admin/logout',
-                'target_url' => 'admin',
+                'logout_path' => '/logout',
+                'target_url' => '/',
                 'invalidate_session' => true
             ],
             'users' => $users,

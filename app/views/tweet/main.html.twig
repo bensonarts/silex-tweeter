@@ -1,7 +1,20 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    <a href="{{ path('admin_logout') }}">Logout</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="{{ path('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <h1>Tweet</h1>
 
     <form method="post">
@@ -10,5 +23,23 @@
             {{ form_widget(form) }}
         </div>
     </form>
+
+    <h2>Previous Tweets</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Posted at</th>
+                <th>Tweet</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tweet in tweets %}
+            <tr>
+                <td>{{ tweet.created_at }}</td>
+                <td>{{ tweet.message }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

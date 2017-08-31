@@ -1,9 +1,9 @@
 <?php
 
-// http://docs.doctrine-project.org/en/latest/reference/configuration.html
-$app = require __DIR__ . '/../../app/app.php';
+require __DIR__.'/vendor/autoload.php';
+require __DIR__.'/app/app.php';
 $newDefaultAnnotationDrivers = array(
-    __DIR__.'/src/Acme',
+    __DIR__."/src/MyNamespace",
 );
 $config = new \Doctrine\ORM\Configuration();
 $config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache);

@@ -15,7 +15,7 @@ class TweetType extends AbstractType
     {
         $builder
             ->add('message', TextType::class, [
-                'label' => 'Tweet',
+                'label' => 'Message',
                 'attr' => [
                     'class' => 'form-control',
                     'maxlength' => 140,

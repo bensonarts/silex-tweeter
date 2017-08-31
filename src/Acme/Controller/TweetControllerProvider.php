@@ -39,7 +39,12 @@ class TweetControllerProvider implements ControllerProviderInterface
     {
         $em = $app['orm.em'];
         $tweet = new Tweet();
-
+        //$tweets = $em->getRepository('Acme:')
+        // TODO Get User ID from auth user.
+        $userId = 1;
+        // TODO Paginate.
+        $sql = 'SELECT * FROM tweet WHERE user_id = ? ORDER BY id DESC';
+        $tweets = $app['db']->fetchAll($sql, [(int) $userId]);
         $form = $app['form.factory']->create(TweetType::class, $tweet);
         $form->handleRequest($request);
 
@@ -47,7 +52,7 @@ class TweetControllerProvider implements ControllerProviderInterface
             $data = $form->getData();
 
             // Save tweet
-            $tweet->setUser(1); // TODO Set to logged in user.
+            $tweet->setUser($userId);
             $em->persist($tweet);
             $em->flush();
 
@@ -56,7 +61,9 @@ class TweetControllerProvider implements ControllerProviderInterface
 
         // display the form
         return $app['twig']->render('tweet/main.html.twig', [
-            'form' => $form->createView()]
+                'form' => $form->createView(),
+                'tweets' => $tweets,
+            ]
         );
     }
 

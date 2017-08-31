@@ -26,7 +26,8 @@ class Tweet
     /**
      * @var User $user
      *
-     * @ORM\Column(name="message", type="string", length=140, nullable=false)
+     * @todo Make User relationship
+     * @ORM\Column(name="user_id", type="integer", nullable=false)
      */
     private $user;
 
@@ -35,8 +36,12 @@ class Tweet
      *
      * @ORM\Column(name="message", type="string", length=140, nullable=false)
      * @Assert\NotBlank()
-     * @Assert\Length(array('min' => 5))
-     * *Assert\Length(array('max' => 140))
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 140,
+     *      minMessage = "Your message must be at least {{ limit }} characters long",
+     *      maxMessage = "Your message cannot be longer than {{ limit }} characters"
+     * )
      */
     private $message;
 
