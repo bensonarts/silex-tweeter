@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+$loader = require_once __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,10 +22,26 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), [
         'user' => 'root',
         'password' => 'ansira',
     ],
+    'db.orm.proxies_dir'  => __DIR__ . '/../app/cache/doctrine/proxy',
 ]);
+// Register entity manager.
+$app->register(new Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), [
+    'orm.proxies_dir' => __DIR__ . '/../app/cache/doctrine/proxy',
+    'orm.em.options' => [
+        'mappings' => [
+            [
+                'type' => 'annotation',
+                'namespace' => 'Acme\Entity',
+                'path' => __DIR__ . '/../src/Acme/Entity',
+            ],
+        ],
+    ],
+]);
+\Doctrine\Common\Annotations\AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
+// TODO Refactor into UserModel.
 $users = [
-'admin' => ['ROLE_ADMIN', '$2y$10$3i9/lVd8UOFIJ6PAMFt8gu3/r5g0qeCJvoSlLCsvMTythye19F77a']
+    'admin' => ['ROLE_ADMIN', '$2y$10$3i9/lVd8UOFIJ6PAMFt8gu3/r5g0qeCJvoSlLCsvMTythye19F77a']
 ];
 // Register security for authentication
 
@@ -48,16 +64,16 @@ $app->register(new Silex\Provider\SecurityServiceProvider(), [
     ]
 ]);
 // Register Monolog
-$app->register(new Silex\Provider\MonologServiceProvider(), array(
+$app->register(new Silex\Provider\MonologServiceProvider(), [
     'monolog.logfile' => __DIR__ . '/../app/log/dev.log',
-));
+]);
 // Register Forms & CSRF
 $app->register(new Silex\Provider\FormServiceProvider());
 $app->register(new Silex\Provider\CsrfServiceProvider());
 $app->register(new Silex\Provider\LocaleServiceProvider());
-$app->register(new Silex\Provider\TranslationServiceProvider(), array(
-    'locale_fallbacks' => array('en'),
-));
+$app->register(new Silex\Provider\TranslationServiceProvider(), [
+    'locale_fallbacks' => ['en'],
+]);
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 
 // Enable local debugging.
@@ -78,10 +94,10 @@ $app->mount('/', new Acme\Controller\MainControllerProvider());
 $app->mount('/tweet', new Acme\Controller\TweetControllerProvider());
 
 $app->get('/login', function(Request $request) use ($app) {
-    return $app['twig']->render('auth/login.html.twig', array(
+    return $app['twig']->render('auth/login.html.twig', [
         'error' => $app['security.last_error']($request),
         'last_username' => $app['session']->get('_security.last_username'),
-    ));
+    ]);
 });
 
 return $app;

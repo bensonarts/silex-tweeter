@@ -2,13 +2,13 @@
 
 namespace Acme\Controller;
 
+use Acme\Form\TweetType;
 use Acme\Entity\Tweet;
 use Silex\Application;
 use Silex\Api\ControllerProviderInterface;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,32 +37,21 @@ class TweetControllerProvider implements ControllerProviderInterface
      */
     public function main(Application $app, Request $request)
     {
+        $em = $app['orm.em'];
         $tweet = new Tweet();
 
-        $form = $app['form.factory']->createBuilder(FormType::class, $tweet)
-            ->add('message', TextareaType::class, [
-                'label' => 'Tweet',
-                'attr' => [
-                    'class' => 'form-control',
-                ],
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Save',
-                'attr' => [
-                    'class' => 'btn btn-primary',
-                ],
-            ])
-            ->getForm();
-
+        $form = $app['form.factory']->create(TweetType::class, $tweet);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $data = $form->getData();
 
-            // do something with the data
+            // Save tweet
+            $tweet->setUser(1); // TODO Set to logged in user.
+            $em->persist($tweet);
+            $em->flush();
 
-            // redirect somewhere
-            return $app->redirect('/tweet/asdf');
+            return $app->redirect('/tweet/');
         }
 
         // display the form
